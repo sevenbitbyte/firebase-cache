@@ -1,0 +1,20 @@
+{
+  "name": "firebase-cache",
+  "description": "Firebase cache utilities",
+  "main": "dist/firebase_cache.js",
+  "authors": [
+    "Alan Meekins <alan@clnb.io>"
+  ],
+  "license": "MIT",
+  "homepage": "https://github.com/CumulonimbusLtd/firebase-cache",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "scripts": {
+    "postinstall": "npm i && npm run build-webpack-production"
+  }
+}
