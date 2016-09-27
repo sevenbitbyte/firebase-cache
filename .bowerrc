@@ -1,0 +1,6 @@
+{
+  "cwd": "./",
+  "scripts": {
+    "postinstall": "npm i && npm run build-webpack-production"
+  }
+}
