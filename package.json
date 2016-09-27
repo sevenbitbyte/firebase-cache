@@ -7,15 +7,15 @@
     "postinstall": "npm run build-webpack-production",
     "watch-src": "webpack --progress --colors --watch",
     "build": "npm run build-webpack; npm run build-docs",
-    "build-webpack-production": "webpack --progress -p",
     "build-docs": "./node_modules/jsdoc/jsdoc.js -d docs -r src/",
-    "build-webpack": "webpack"
+    "build-webpack": "webpack",
+    "build-webpack-production": "webpack --progress -p"
   },
   "dependencies": {
     "async": "^2.0.1",
     "hoek": "^4.0.2",
-    "jsdoc": "^3.4.0",
-    "lokijs": "^1.4.1"
+    "joi": "9.0.4",
+    "lodash": "^4.16.2"
   },
   "devDependencies": {
     "babel": "^6.5.2",
@@ -23,10 +23,9 @@
     "babel-loader": "^6.2.5",
     "babel-preset-es2015": "^6.14.0",
     "compression-webpack-plugin": "^0.3.1",
-    "joi": "9.0.4",
-    "moment": "2.x.x",
     "ngzip": "^1.1.3",
     "ntee": "^1.1.4",
-    "webpack": "^1.13.2"
+    "webpack": "^1.13.2",
+    "jsdoc": "^3.4.0"
   }
 }
