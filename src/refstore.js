@@ -5,7 +5,7 @@ const Url = require('url')
 const Hoek = require('hoek')
 
 
-const Reference = require('./ref')
+const Ref = require('./ref')
 
 /**
  * @class
@@ -23,17 +23,17 @@ class RefStore {
   constructor(firebaseInstance, autoOff){
     this.autoOff = (autoOff!=undefined) ? autoOff : true
     this.firebase = firebaseInstance
-    this.refs = {}          //! Map of [refPath] -> Reference
-    this.nativeRefs = {}    //! Map of [refPath] -> firebase.Database.Reference
+    this.refs = {}          //! Map of [refPath] -> Ref
+    this.nativeRefs = {}    //! Map of [refPath] -> firebase.Database.Ref
     this.queries = {}       //! Map of [queryPath] -> firebase.Database.Query
     this.nativeQueries = {} //! Map of [queryPath] -> firebase.Database.Query
   }
 
 
   /**
-   *  Create or return a Reference instance for the specified path
+   *  Create or return a Ref instance for the specified path
    *  @param  {string}  path
-   *  @returns {firebase_cache.Reference}
+   *  @returns {firebase_cache.Ref}
    */
   ref(path){
     let url = Url.parse(path, true)
@@ -47,16 +47,16 @@ class RefStore {
     if(this.hasRef(refPath)){ return this.refs[refPath] }
 
     this.nativeRefs[refPath] = this.firebase.database().ref(refPath)
-    this.refs[refPath] = new Reference({store: this, path: refPath, ref: this.nativeRefs[refPath]})
+    this.refs[refPath] = new Ref({store: this, path: refPath, ref: this.nativeRefs[refPath]})
     return this.refs[refPath]
   }
 
 
   /**
-   *  Create or return a Reference instance for the specified query path
+   *  Create or return a Ref instance for the specified query path
    *  @param  {string}  path
    *  @param  {firebase_cache.RefStore.QueryConfig}  query - Query Object
-   *  @returns {firebase_cache.Reference}
+   *  @returns {firebase_cache.Ref}
    */
   query(path, query){
     console.log('query')
@@ -68,13 +68,13 @@ class RefStore {
     if(this.hasQuery(url, queryObj)){ return this.queries[queryString] }
 
     var fbQuery = this.nativeQuery(path, queryObj)
-    this.queries[queryString] = new Reference({store: this, path: queryString, ref:fbQuery, queryObj: queryObj})
+    this.queries[queryString] = new Ref({store: this, path: queryString, ref:fbQuery, queryObj: queryObj})
     return this.queries[queryString]
   }
 
   /**
    *  Clean up resources associated with the specified ref or query. Purge should be called on the ref/query directly first
-   *  @param  {string}  path  - Reference or query path
+   *  @param  {string}  path  - Ref or query path
    */
   purge(path){
     if(this.hasQuery(path)){
@@ -95,9 +95,9 @@ class RefStore {
   }
 
   /**
-   *  Lookup a firebase Reference from those tracked by the store. Returns a newly created Reference if not already tracked
-   *  @param  {string}  path  - Reference path
-   *  @returns {firebase.Database.Reference}
+   *  Lookup a firebase Ref from those tracked by the store. Returns a newly created Ref if not already tracked
+   *  @param  {string}  path  - Ref path
+   *  @returns {firebase.Database.Ref}
    */
   nativeRef(path){
     let url = Url.parse(path, true)
@@ -192,7 +192,7 @@ class RefStore {
    */
 
   /**
-   *  Lookup a firebase Query from those tracked by the store. Returns a newly created Reference if not already tracked
+   *  Lookup a firebase Query from those tracked by the store. Returns a newly created Ref if not already tracked
    *  @param  {string}  path  - Query path
    *  @param  {firebase_cache.RefStore.QueryConfig}  query - Query Object
    *  @returns {firebase.Database.Query}
@@ -205,7 +205,7 @@ class RefStore {
     // Return existing query
     if(this.nativeQueries[queryString]){ return this.nativeQueries[queryString] }
 
-    //Build firebase.database.Query from firebase.database.Reference
+    //Build firebase.database.Query from firebase.database.Ref
     //var ref = this.nativeRef(url.pathname)
     var ref = this.firebase.database().ref(url.pathname)
 
@@ -252,7 +252,7 @@ class RefStore {
   }
 
   /**
-   *  Is the specified Reference currently tracked
+   *  Is the specified Ref currently tracked
    *  @param  {string}  path
    *  @returns {boolean}
    */
@@ -260,7 +260,7 @@ class RefStore {
     let url = Url.parse(path, true)
     let refPath = url.pathname
 
-    return this.refs[refPath] && this.refs[refPath] instanceof Reference
+    return this.refs[refPath] && this.refs[refPath] instanceof Ref
   }
 
   /**
@@ -274,7 +274,7 @@ class RefStore {
     let queryObj = RefStore.parseQueryPath(path, query)
     let queryString = RefStore.queryToQueryString(url, queryObj)
 
-    return this.queries[queryString] && this.queries[queryString] instanceof Reference
+    return this.queries[queryString] && this.queries[queryString] instanceof Ref
   }
 
 

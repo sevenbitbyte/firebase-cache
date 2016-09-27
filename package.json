@@ -4,9 +4,10 @@
   "description": "Firebase cache utilities",
   "main": "src/index.js",
   "scripts": {
-    "postinstall": "npm run build",
+    "postinstall": "npm run build-webpack-production",
     "watch-src": "webpack --progress --colors --watch",
     "build": "npm run build-webpack; npm run build-docs",
+    "build-webpack-production": "webpack --progress -p",
     "build-docs": "./node_modules/jsdoc/jsdoc.js -d docs -r src/",
     "build-webpack": "webpack"
   },

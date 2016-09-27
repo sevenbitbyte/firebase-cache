@@ -14,9 +14,9 @@ const RefStore = require('./refstore')
  * @classdesc
  * @memberof  firebase_cache
  */
-class Reference {
+class Ref {
   /**
-   *  Reference
+   *  Ref
    *  @constructor
    */
   constructor(options){
@@ -73,26 +73,26 @@ class Reference {
   }
 
   /**
-   *  @callback  firebase_cache.Reference.ErrorCallback
-   *  @param  {firebase_cache.Reference.ErrorEvent}  event
+   *  @callback  firebase_cache.Ref.ErrorCallback
+   *  @param  {firebase_cache.Ref.ErrorEvent}  event
    */
 
   /**
-   *  @callback  firebase_cache.Reference.DataCallback
-   *  @param  {firebase_cache.Reference.DataEvent}  event
+   *  @callback  firebase_cache.Ref.DataCallback
+   *  @param  {firebase_cache.Ref.DataEvent}  event
    */
 
   /**
-   * @typedef  {Object}  firebase_cache.Reference.DataEvent
-   * @property {firebase_cache.Reference}  ref - Reference event occured in
+   * @typedef  {Object}  firebase_cache.Ref.DataEvent
+   * @property {firebase_cache.Ref}  ref - Ref event occured in
    * @property {String}  type - Origin of event
    * @property {Object}  args - Detailed change infromation
    * @property {firebase.database.Snapshot}  args.snapshot - Firebase snapshot
    */
 
    /**
-    * @typedef  {Object}  firebase_cache.Reference.ErrorEvent
-    * @property {firebase_cache.Reference}  ref - Reference event occured in
+    * @typedef  {Object}  firebase_cache.Ref.ErrorEvent
+    * @property {firebase_cache.Ref}  ref - Ref event occured in
     * @property {Object}  error - Original error object
     */
 
@@ -152,7 +152,7 @@ class Reference {
   /**
    *  Listen for an event
    *  @param  {string}          event
-   *  @param  {firebase_cache.Reference.DataCallback|firebase_cache.Reference.ErrorCallback}        callback
+   *  @param  {firebase_cache.Ref.DataCallback|firebase_cache.Ref.ErrorCallback}        callback
    *  @returns  {callback}
    */
   on(event, callback){
@@ -180,7 +180,7 @@ class Reference {
   /**
    *  Disable handler for an event
    *  @param  {string}          event
-   *  @param  {firebase_cache.Reference.DataCallback|firebase_cache.Reference.ErrorCallback}        callback
+   *  @param  {firebase_cache.Ref.DataCallback|firebase_cache.Ref.ErrorCallback}        callback
    */
   off(event, callback){
     if(!this.callbacks[event]){ throw 'Unsupported event type[' + event + ']' }
@@ -222,7 +222,7 @@ class Reference {
   /**
    *  Wait for a single update from firebase
    *  @param  {string}  event - An event to wait for. Can be `data` or `error`
-   *  @param  {firebase_cache.Reference.DataCallback|firebase_cache.Reference.ErrorCallback}        callback
+   *  @param  {firebase_cache.Ref.DataCallback|firebase_cache.Ref.ErrorCallback}        callback
    */
   once(event, func){
     this.on(event, ()=>{
@@ -247,8 +247,8 @@ class Reference {
 
   /**
    *  Delivers data immediatly if cached or as soon as its avilable
-   *  @param  {firebase_cache.Reference.DataCallback}        callback
-   *  @param  {firebase_cache.Reference.ErrorCallback}        errorCallback
+   *  @param  {firebase_cache.Ref.DataCallback}        callback
+   *  @param  {firebase_cache.Ref.ErrorCallback}        errorCallback
    */
   data(callback, errorCallback){
     if(this._data){
@@ -275,7 +275,7 @@ class Reference {
 
   /**
    *  Create a query which selects previous items
-   *  @returns  {firebase_cache.Reference}
+   *  @returns  {firebase_cache.Ref}
    */
   prev(){
     if(Hoek.reach(this.queryObj, 'orderBy', {default: '$key'}) == '$key'){
@@ -308,7 +308,7 @@ class Reference {
 
   /**
    *  Create a query which selects next items
-   *  @returns  {firebase_cache.Reference}
+   *  @returns  {firebase_cache.Ref}
    */
   next(){
     console.log(this)
@@ -328,4 +328,4 @@ class Reference {
   }
 }
 
-module.exports = Reference
+module.exports = Ref

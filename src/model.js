@@ -29,7 +29,7 @@ class Model {
   /**
    *  @typedef  {Object}  firebase_cache.Model.Field
    *  @property {string}  name - Field name
-   *  @property {firebase_cache.Reference|firebase_cache.Model}  source - Origin of data
+   *  @property {firebase_cache.Ref|firebase_cache.Model}  source - Origin of data
    *  @property {string}  path -  Firebase ref path or model path
    *  @property {string}  type  - Update type (on, once, val, data, or offline)
    *  @property {object}  data  - Last read data object
@@ -67,7 +67,7 @@ class Model {
    *  Set a reference or model as a field
    *
    *  @param  {string}  name - Field name
-   *  @param  {firebase_cache.Reference|firebase_cache.Model} refOrModel - reference or model to use the field's source of data
+   *  @param  {firebase_cache.Ref|firebase_cache.Model} refOrModel - reference or model to use the field's source of data
    *  @param  {string}  type - Type defines how data is updated for this field. Accepted values are on, once, val, data or offline
    */
   setField(name, refOrModel, type){
@@ -138,7 +138,7 @@ class Model {
 
   /**
    *  Get Field by source object
-   *  @param  {firebase_cache.Reference|firebase_cache.Model}  source  - Field source
+   *  @param  {firebase_cache.Ref|firebase_cache.Model}  source  - Field source
    *  @returns  {firebase_cache.Model.Field}
    */
   fieldBySource(source){
@@ -437,7 +437,7 @@ class Model {
   /**
    *  Create a query which selects previous items
    *  @param  {string}  name - Field name
-   *  @returns  {firebase_cache.Reference}
+   *  @returns  {firebase_cache.Ref}
    */
   prev(name){
     let f = this.field(name)
@@ -465,7 +465,7 @@ class Model {
   /**
    *  Create a query which selects next items
    *  @param  {string}  name - Field name
-   *  @returns  {firebase_cache.Reference}
+   *  @returns  {firebase_cache.Ref}
    */
   next(name, callback, errorCallback){
     let f = this.field(name)
