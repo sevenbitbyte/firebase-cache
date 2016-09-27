@@ -1,12 +1,13 @@
 'use strict';
 
-const webpack = require('webpack');
-const CompressionPlugin = require("compression-webpack-plugin");
+const path = require('path')
+const webpack = require('webpack')
+const CompressionPlugin = require("compression-webpack-plugin")
+const webpackUglifyJsPlugin = require('webpack-uglify-js-plugin')
 
 module.exports = {
   entry: {
-    "firebase-cache": './src',
-    "firebase-cache.min": "./src"
+    "firebase_cache": './src',
   },
   devtool: "source-map",
   output: {
@@ -17,10 +18,22 @@ module.exports = {
     filename: '[name].js'
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
+    /*new webpack.optimize.UglifyJsPlugin({
       include: /\.min\.js$/,
       minimize: true
-    }),
+    }),*/
+    /*new webpackUglifyJsPlugin({
+      cacheFolder: path.resolve(__dirname, 'public/cached_uglify/'),
+      debug: true,
+      minimize: true,
+      sourceMap: true,
+      output: {
+        comments: false
+      },
+      compressor: {
+        warnings: false
+      }
+    }),*/
     new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
