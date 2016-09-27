@@ -5,7 +5,7 @@ const Url = require('url')
 const Hoek = require('hoek')
 
 
-const Ref = require('./ref')
+const Reference = require('./ref')
 
 /**
  * @class
@@ -23,7 +23,7 @@ class RefStore {
   constructor(firebaseInstance, autoOff){
     this.autoOff = (autoOff!=undefined) ? autoOff : true
     this.firebase = firebaseInstance
-    this.refs = {}          //! Map of [refPath] -> Ref
+    this.refs = {}          //! Map of [refPath] -> Reference
     this.nativeRefs = {}    //! Map of [refPath] -> firebase.Database.Reference
     this.queries = {}       //! Map of [queryPath] -> firebase.Database.Query
     this.nativeQueries = {} //! Map of [queryPath] -> firebase.Database.Query
@@ -31,9 +31,9 @@ class RefStore {
 
 
   /**
-   *  Create or return a Ref instance for the specified path
+   *  Create or return a Reference instance for the specified path
    *  @param  {string}  path
-   *  @returns {firebase_cache.Ref}
+   *  @returns {firebase_cache.Reference}
    */
   ref(path){
     let url = Url.parse(path, true)
@@ -47,16 +47,16 @@ class RefStore {
     if(this.hasRef(refPath)){ return this.refs[refPath] }
 
     this.nativeRefs[refPath] = this.firebase.database().ref(refPath)
-    this.refs[refPath] = new Ref({store: this, path: refPath, ref: this.nativeRefs[refPath]})
+    this.refs[refPath] = new Reference({store: this, path: refPath, ref: this.nativeRefs[refPath]})
     return this.refs[refPath]
   }
 
 
   /**
-   *  Create or return a Ref instance for the specified query path
+   *  Create or return a Reference instance for the specified query path
    *  @param  {string}  path
    *  @param  {firebase_cache.RefStore.QueryConfig}  query - Query Object
-   *  @returns {firebase_cache.Ref}
+   *  @returns {firebase_cache.Reference}
    */
   query(path, query){
     console.log('query')
@@ -68,13 +68,13 @@ class RefStore {
     if(this.hasQuery(url, queryObj)){ return this.queries[queryString] }
 
     var fbQuery = this.nativeQuery(path, queryObj)
-    this.queries[queryString] = new Ref({store: this, path: queryString, ref:fbQuery, queryObj: queryObj})
+    this.queries[queryString] = new Reference({store: this, path: queryString, ref:fbQuery, queryObj: queryObj})
     return this.queries[queryString]
   }
 
   /**
    *  Clean up resources associated with the specified ref or query. Purge should be called on the ref/query directly first
-   *  @param  {string}  path  - Ref or query path
+   *  @param  {string}  path  - Reference or query path
    */
   purge(path){
     if(this.hasQuery(path)){
@@ -96,7 +96,7 @@ class RefStore {
 
   /**
    *  Lookup a firebase Reference from those tracked by the store. Returns a newly created Reference if not already tracked
-   *  @param  {string}  path  - Ref path
+   *  @param  {string}  path  - Reference path
    *  @returns {firebase.Database.Reference}
    */
   nativeRef(path){
@@ -260,7 +260,7 @@ class RefStore {
     let url = Url.parse(path, true)
     let refPath = url.pathname
 
-    return this.refs[refPath] && this.refs[refPath] instanceof Ref
+    return this.refs[refPath] && this.refs[refPath] instanceof Reference
   }
 
   /**
@@ -274,7 +274,7 @@ class RefStore {
     let queryObj = RefStore.parseQueryPath(path, query)
     let queryString = RefStore.queryToQueryString(url, queryObj)
 
-    return this.queries[queryString] && this.queries[queryString] instanceof Ref
+    return this.queries[queryString] && this.queries[queryString] instanceof Reference
   }
 
 
