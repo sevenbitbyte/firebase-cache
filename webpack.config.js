@@ -1,32 +1,33 @@
 'use strict';
 
-const webpack = require('webpack');
-const CompressionPlugin = require("compression-webpack-plugin");
+const path = require('path')
+const webpack = require('webpack')
+const CompressionPlugin = require("compression-webpack-plugin")
 
 module.exports = {
-  entry: {
-    "firebase-cache": './src',
-    "firebase-cache.min": "./src"
-  },
-  devtool: "source-map",
+  entry: './src/index.js',
+  //devtool: 'eval',
+  //devtool: 'source-map',
+  devtool: 'cheap-module-source-map',
   output: {
-    library: ['[name]'],
-    libraryTarget: 'umd',
-    umdNamedDefine: false,
+    library: ['firebase_cache'],
+    //libraryTarget: 'umd',
+    //umdNamedDefine: false,
     path: __dirname + '/dist',
-    filename: '[name].js'
+    filename: 'firebase_cache.js'
   },
   plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      include: /\.min\.js$/,
-      minimize: true
-    }),
     new CompressionPlugin({
       asset: "[path].gz[query]",
       algorithm: "gzip",
-      test: /\.js$|\.html$/,
+      test: /\.js$/,
       threshold: 10240,
       minRatio: 0.8
+    }),
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production')
+      }
     })
   ],
   node: {
@@ -39,5 +40,17 @@ module.exports = {
     async: true,
     hoek: true,
     joi: true
-  }]
+  }],
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        loader: 'babel',
+        exclude: /node_modules/,
+        query: {
+          presets: ['es2015']
+        }
+      }
+    ],
+  }
 };

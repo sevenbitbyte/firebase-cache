@@ -24,7 +24,7 @@ class RefStore {
     this.autoOff = (autoOff!=undefined) ? autoOff : true
     this.firebase = firebaseInstance
     this.refs = {}          //! Map of [refPath] -> Ref
-    this.nativeRefs = {}    //! Map of [refPath] -> firebase.Database.Reference
+    this.nativeRefs = {}    //! Map of [refPath] -> firebase.Database.Ref
     this.queries = {}       //! Map of [queryPath] -> firebase.Database.Query
     this.nativeQueries = {} //! Map of [queryPath] -> firebase.Database.Query
   }
@@ -95,9 +95,9 @@ class RefStore {
   }
 
   /**
-   *  Lookup a firebase Reference from those tracked by the store. Returns a newly created Reference if not already tracked
+   *  Lookup a firebase Ref from those tracked by the store. Returns a newly created Ref if not already tracked
    *  @param  {string}  path  - Ref path
-   *  @returns {firebase.Database.Reference}
+   *  @returns {firebase.Database.Ref}
    */
   nativeRef(path){
     let url = Url.parse(path, true)
@@ -192,7 +192,7 @@ class RefStore {
    */
 
   /**
-   *  Lookup a firebase Query from those tracked by the store. Returns a newly created Reference if not already tracked
+   *  Lookup a firebase Query from those tracked by the store. Returns a newly created Ref if not already tracked
    *  @param  {string}  path  - Query path
    *  @param  {firebase_cache.RefStore.QueryConfig}  query - Query Object
    *  @returns {firebase.Database.Query}
@@ -205,7 +205,7 @@ class RefStore {
     // Return existing query
     if(this.nativeQueries[queryString]){ return this.nativeQueries[queryString] }
 
-    //Build firebase.database.Query from firebase.database.Reference
+    //Build firebase.database.Query from firebase.database.Ref
     //var ref = this.nativeRef(url.pathname)
     var ref = this.firebase.database().ref(url.pathname)
 
@@ -252,7 +252,7 @@ class RefStore {
   }
 
   /**
-   *  Is the specified Reference currently tracked
+   *  Is the specified Ref currently tracked
    *  @param  {string}  path
    *  @returns {boolean}
    */

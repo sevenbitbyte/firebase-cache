@@ -84,7 +84,7 @@ class Ref {
 
   /**
    * @typedef  {Object}  firebase_cache.Ref.DataEvent
-   * @property {firebase_cache.Ref}  ref - Reference event occured in
+   * @property {firebase_cache.Ref}  ref - Ref event occured in
    * @property {String}  type - Origin of event
    * @property {Object}  args - Detailed change infromation
    * @property {firebase.database.Snapshot}  args.snapshot - Firebase snapshot
@@ -92,7 +92,7 @@ class Ref {
 
    /**
     * @typedef  {Object}  firebase_cache.Ref.ErrorEvent
-    * @property {firebase_cache.Ref}  ref - Reference event occured in
+    * @property {firebase_cache.Ref}  ref - Ref event occured in
     * @property {Object}  error - Original error object
     */
 
