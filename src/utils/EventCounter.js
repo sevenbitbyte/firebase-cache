@@ -21,6 +21,7 @@ class EventCounter {
     if()
 
 
+
     if(!this.counters[name]){
       this.counters[name]=1
 
