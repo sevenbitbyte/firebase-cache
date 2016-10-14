@@ -23,6 +23,7 @@ class EventCounter {
 
 
 
+
     if(!this.counters[name]){
       this.counters[name]=1
 
