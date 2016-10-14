@@ -11,7 +11,6 @@ class EventCounter {
     this.options = result.value
 
     this.counters = {}
-
     this.timestamp = (!this.options.rate) ? undefined : {}
     this.rateMs = (!this.options.rate) ? undefined : {}
     this.avgRateMs = (!this.options.rate) ? undefined : {}
