@@ -299,7 +299,7 @@ class Ref {
           limitToLast: Hoek.reach(this.queryObj, 'limitToLast', {default: 25})
         }
 
-        return this.store.query(this.path, nextQueryObj)
+        return this.store.query(this.path, prevQueryObj)
       }
     }
     else if(Hoek.reach(this.queryObj, 'orderBy') == '$value'){
