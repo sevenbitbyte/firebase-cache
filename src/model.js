@@ -10,7 +10,7 @@ const EventEmitter = require('events')
  * @classdesc
  * @memberof  firebase_cache
  */
-export default class Model {
+class Model {
   /**
    *  Model
    *  @constructor
@@ -473,3 +473,5 @@ export default class Model {
     }
   }
 }
+
+module.exports = Model
