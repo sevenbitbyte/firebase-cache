@@ -70,7 +70,7 @@ class Model {
    *  @param  {firebase_cache.Ref|firebase_cache.Model} refOrModel - reference or model to use the field's source of data
    *  @param  {string}  type - Type defines how data is updated for this field. Accepted values are on, once, val, data or offline
    */
-  setField(name, refOrModel, type){
+  createField(name, refOrModel, type){
     let f = this.fields[name]
     let alreadyConnected=f && f.handler
     let connectedEvents = (f) ? Object.keys(f.handler) : []
@@ -159,6 +159,11 @@ class Model {
     f.data = event.ref.val()
     f.datatype = event.type
     f.lastUpdate = new Date()
+
+    if(f.type == 'offline'){
+      // Don't update offline data fields
+      return
+    }
 
     if(f.handler['data'] && f.type == 'data'){
       f.handler['data']=false
@@ -405,32 +410,7 @@ class Model {
         this.off('error', errorCallback)
       })
 
-      return;
-/*
-      console.log(updateQueue)
-      Async.each(
-        updateQueue,
-        (f,done)=>{
-          //f.source.data(done, done)
-          console.log(f.name)
-          this.once('data.'+f.name, ()=>{done();})
-        },
-        (err)=>{
-          console.log('done')
-          if(err){
-            console.error(err)
-            return errorCallback({error:err, model: this})
-          }
-
-          console.log(typeof callback)
-
-          return callback({
-            model: this,
-            field: '',
-            type: 'data'
-          })
-        }
-      )*/
+      return
     }
   }
 
@@ -442,7 +422,7 @@ class Model {
   prev(name){
     let f = this.field(name)
     let newSource = f.source.prev()
-    this.setField(name, newSource, f.type)
+    this.createField(name, newSource, f.type)
     f = this.field(name)
 
     if(f.source && f.type == 'once' && !f.data){
@@ -471,7 +451,7 @@ class Model {
     let f = this.field(name)
     let newSource = f.source.next()
     console.log(newSource)
-    this.setField(name, newSource, f.type)
+    this.createField(name, newSource, f.type)
     f = this.field(name)
 
     if(f.source && f.type == 'once' && !f.data){
@@ -492,12 +472,6 @@ class Model {
       })
     }
   }
-
-  push(field, data){
-    //
-  }
-
-
 }
 
-module.exports = Model
+export default Model;

@@ -6,6 +6,7 @@ const Hoek = require('hoek')
 
 
 const Ref = require('./ref')
+const EventCounter = require('./utils/EventCounter')
 
 /**
  * @class
@@ -22,13 +23,31 @@ class RefStore {
    */
   constructor(firebaseInstance, autoOff){
     this.autoOff = (autoOff!=undefined) ? autoOff : true
+    this.enableRateLog = true
+    this.enableCounters = true
     this.firebase = firebaseInstance
     this.refs = {}          //! Map of [refPath] -> Ref
     this.nativeRefs = {}    //! Map of [refPath] -> firebase.Database.Ref
     this.queries = {}       //! Map of [queryPath] -> firebase.Database.Query
     this.nativeQueries = {} //! Map of [queryPath] -> firebase.Database.Query
+    this.counters = {}    //! Map of [refPath] -> RefStatistics
   }
 
+  counter(path){
+    if(!this.enableCounters){
+      return null
+    }
+
+    if(!this.counters[path]){
+      this.counters[path] = new EventCounter({rate: this.enableRateLog})
+    }
+  }
+
+  logEvent(path, type){
+    var counter = this.counters(path)
+    if(!counter){ return }
+    counter.countEvent(type)
+  }
 
   /**
    *  Create or return a Ref instance for the specified path

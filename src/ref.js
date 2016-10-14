@@ -64,11 +64,7 @@ class Ref {
       lastRead : undefined,        //! Time data was delivered to a listener
       lastUpdateStart : undefined, //! Last time an update started
       lastUpdate : undefined,   //! Last time an update finished
-      lastIdle: undefined,
-      counters : {
-        read: 0,
-        save: 0
-      }
+      lastIdle: undefined
     }
   }
 
@@ -116,9 +112,11 @@ class Ref {
     this._data = null
     this.ref = null
     this.store = null
+    this.events = null
     delete this.ref
     delete this.store
     delete this._data
+    delete this.events
   }
 
   _handle_error(error){
@@ -133,6 +131,7 @@ class Ref {
 
     this._data = snapshot.val()
     this.stats.lastUpdate = new Date()
+    this.store.logEvent(this.path, 'snapshot')
     this.events.emit('data', {
       ref: this,
       type: 'value',
@@ -238,7 +237,7 @@ class Ref {
    */
   val(){
     if(this._data){
-      this.stats.counters.read++
+      this.store.logEvent(this.path, 'read')
       this.stats.lastRead = new Date()
       return this._data
     }
@@ -269,8 +268,22 @@ class Ref {
     })
   }
 
-  push(){
+  push(data, callback){
+    this._data = data
+    this.store.logEvent(this.path, 'push')
+    return this.store.ref(this.path).push(data, callback)
+  }
 
+  set(data, callback){
+    this._data = data
+    this.store.logEvent(this.path, 'set')
+    return this.store.ref(this.path).set(data, callback)
+  }
+
+  remove(callback){
+    this._data = null
+    this.store.logEvent(this.path, 'remove')
+    return this.store.ref(this.path).remove(callback)
   }
 
   /**
