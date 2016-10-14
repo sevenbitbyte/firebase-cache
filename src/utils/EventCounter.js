@@ -18,12 +18,6 @@ class EventCounter {
   }
 
   countEvent(name){
-    if()
-
-
-
-
-
     if(!this.counters[name]){
       this.counters[name]=1
 
