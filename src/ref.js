@@ -142,12 +142,6 @@ class Ref {
     })
   }
 
-  /*_handle_on_child_added(event, arg1, arg2){}
-  _handle_on_child_removed(event, arg1, arg2){}
-  _handle_on_child_changed(event, arg1, arg2){}
-  _handle_on_child_moved(event, arg1, arg2){}*/
-
-
   /**
    *  Listen for an event
    *  @param  {string}          event
@@ -166,10 +160,6 @@ class Ref {
     if(event == 'data'){
       //! Connect internal handlers
       this._connectHandler('value')
-      /*this._connectHandler('child_added')
-      this._connectHandler('child_moved')
-      this._connectHandler('child_changed')
-      this._connectHandler('child_removed')*/
       this.stats.lastUpdateStart = new Date()
     }
 
