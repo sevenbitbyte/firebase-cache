@@ -271,19 +271,19 @@ class Ref {
   push(data, callback){
     this._data = data
     this.store.logEvent(this.path, 'push')
-    return this.store.ref(this.path).push(data, callback)
+    return this.store.nativeRef(this.path).push(data, callback)
   }
 
   set(data, callback){
     this._data = data
     this.store.logEvent(this.path, 'set')
-    return this.store.ref(this.path).set(data, callback)
+    return this.store.nativeRef(this.path).set(data, callback)
   }
 
   remove(callback){
     this._data = null
     this.store.logEvent(this.path, 'remove')
-    return this.store.ref(this.path).remove(callback)
+    return this.store.nativeRef(this.path).remove(callback)
   }
 
   /**
