@@ -152,7 +152,13 @@ class RefStore {
           key: Joi.string()
         })
       ),
-      endAt: Joi.string(),
+      endAt: Joi.alternatives().try(
+        Joi.string(),
+        Joi.object().keys({
+          value: Joi.string(),
+          key: Joi.string()
+        })
+      ),
       equalTo: Joi.string()
     }).nand('limitToFirst', 'limitToLast')
 

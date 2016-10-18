@@ -42,6 +42,7 @@ class Ref {
 
     this._data = undefined
     this.error = undefined
+    this._schema = undefined
 
      //! Client callbacks
     this.callbacks = {
@@ -92,6 +93,13 @@ class Ref {
     * @property {Object}  error - Original error object
     */
 
+  set schema(input){
+    this._schema = input
+  }
+
+  get schema(){
+    return this._schema
+  }
 
   /**
    *  Clear all data and event handlers
@@ -258,16 +266,24 @@ class Ref {
     })
   }
 
+  validateData(input){
+    if(input != null){
+      let result = Joi.validate(input, this._schema)
+      if(result.error){ throw result.error }
+    }
+    return input
+  }
+
   push(data, callback){
-    this._data = data
+    this._data = validateData(data)
     this.store.logEvent(this.path, 'push')
-    return this.store.nativeRef(this.path).push(data, callback)
+    return this.store.nativeRef(this.path).push(this._data, callback)
   }
 
   set(data, callback){
-    this._data = data
+    this._data = validateData(data)
     this.store.logEvent(this.path, 'set')
-    return this.store.nativeRef(this.path).set(data, callback)
+    return this.store.nativeRef(this.path).set(this._data, callback)
   }
 
   remove(callback){

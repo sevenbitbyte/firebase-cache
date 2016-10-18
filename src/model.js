@@ -17,6 +17,7 @@ class Model {
    */
   constructor(name){
     this.fields = {}
+    this.templates = {}
     this.params = {}  //! Map of params[ 'profileID' ] = -K-A4F3GDGF5F4dvtHrt5r etc
     this.events = new EventEmitter()
     this.events.setMaxListeners(100)
@@ -79,14 +80,14 @@ class Model {
       name: name,
       source: refOrModel,
       path: refOrModel.path,
-      type: (type) ? type : 'once',
+      type: (type) ? type : 'data',
       data: (refOrModel.val()) ? refOrModel.val() : null,
       datatype: null,
       handler: {},
       lastUpdate: undefined
     }
 
-    //connect callbacks
+    //validate type
     let t = this.fields[name].type
     switch(t){
       case 'on':
@@ -106,6 +107,19 @@ class Model {
         }
       }
     }
+  }
+
+  createTemplate(name, template){
+    this.templates[name] = template
+    return this.updateTemplate(name)
+  }
+
+  updateTemplate(name){
+    //! Create a new source using template and params
+
+    let t = this.templates[t].template
+    let newSettings = t.applyParams(this.params)
+
   }
 
   /**
@@ -471,6 +485,25 @@ class Model {
         })
       })
     }
+  }
+
+  setFieldMode(nameMode, mode){
+    if(!mode && nameMode){
+      //Set all fields[].type to nameMode
+    }
+    else{
+      //Set field fields[nameMode].type to mode
+    }
+  }
+
+  setParams(values){
+    this.params = values
+    //! Trigger auto update
+  }
+
+  setParam(name, value){
+    this.param[name] = value
+    //! Trigger auto update
   }
 }
 
