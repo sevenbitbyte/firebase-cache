@@ -15,7 +15,8 @@ class Model {
    *  Model
    *  @constructor
    */
-  constructor(name){
+  constructor(name, store){
+    this.store = store
     this.fields = {}
     this.templates = {}
     this.params = {}  //! Map of params[ 'profileID' ] = -K-A4F3GDGF5F4dvtHrt5r etc
@@ -76,11 +77,11 @@ class Model {
     let alreadyConnected=f && f.handler
     let connectedEvents = (f) ? Object.keys(f.handler) : []
 
-    this.fields[name] = {
+    let newField = {
       name: name,
       source: refOrModel,
       path: refOrModel.path,
-      type: (type) ? type : 'data',
+      type: (type) ? type : Hoek.reach(oldField, 'type', {default: 'data'}),
       data: (refOrModel.val()) ? refOrModel.val() : null,
       datatype: null,
       handler: {},
@@ -88,8 +89,7 @@ class Model {
     }
 
     //validate type
-    let t = this.fields[name].type
-    switch(t){
+    switch(newField.type){
       case 'on':
       case 'once':
       case 'data':
@@ -97,13 +97,19 @@ class Model {
       case 'offline':
         break
       default:
-        throw 'Invalid field type[' + t + ']'
+        throw 'Invalid field type[' + newField.type + ']'
     }
 
+    this.fields[name] = newField
+
     if(alreadyConnected){
-      if(f.source && f.type == 'on' && t == 'on'){
+      for(let i in connectedEvents){
+          this._disconnectHandler(connectedEvents[i], f)
+      }
+
+      if(f.source && f.type == 'on' && newField.type == 'on'){
         for(let i in connectedEvents){
-            this._connectHandler(connectedEvents[i], f)
+            this._connectHandler(connectedEvents[i], this.fields[name])
         }
       }
     }
@@ -117,9 +123,23 @@ class Model {
   updateTemplate(name){
     //! Create a new source using template and params
 
+    let f = this.field(name)
     let t = this.templates[t].template
     let newSettings = t.applyParams(this.params)
 
+    if(newSettings.query){
+      if(!f || JSON.stringify(f.ref.queryObj) != JSON.stringify(newSettings.query)){
+        let newQuery = this.store.query(newSettings.uri, newSettings.query)
+        this.createField(name, query, Hoek.reach(f, 'type'))
+        return true
+      }
+    }
+    else if(!f || newSettings.uri != f.path){
+      let newRef = this.store.ref(newSettings.uri)
+      this.createField(name, ref, Hoek.reach(f, 'type'))
+      return true
+    }
+    return false
   }
 
   /**
@@ -498,12 +518,16 @@ class Model {
 
   setParams(values){
     this.params = values
-    //! Trigger auto update
+    for(let name in this.templates){
+      this.updateTemplate(name)
+    }
   }
 
   setParam(name, value){
     this.param[name] = value
-    //! Trigger auto update
+    for(let name in this.templates){
+      this.updateTemplate(name)
+    }
   }
 }
 
