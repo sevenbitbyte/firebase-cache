@@ -59,4 +59,4 @@ class ModelTemplate {
 
 }
 
- module.export = ModelTemplate
+ module.exports = ModelTemplate
