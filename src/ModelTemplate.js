@@ -1,5 +1,8 @@
 'use strict'
 
+const Joi=require('joi')
+const Hoek=require('Hoek')
+
 const CommonSchema = require('./CommonSchema')
 
 class ModelTemplate {
