@@ -81,7 +81,7 @@ class Model {
       name: name,
       source: refOrModel,
       path: refOrModel.path,
-      type: (type) ? type : Hoek.reach(oldField, 'type', {default: 'data'}),
+      type: (type) ? type : Hoek.reach(f, 'type', {default: 'data'}),
       data: (refOrModel.val()) ? refOrModel.val() : null,
       datatype: null,
       handler: {},
