@@ -37,3 +37,5 @@ class EventCounter {
     }
   }
 }
+
+module.exports = EventCounter
