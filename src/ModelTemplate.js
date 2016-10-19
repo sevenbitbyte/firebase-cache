@@ -11,7 +11,7 @@ class ModelTemplate {
       mode: Joi.string().default('data'),
       schema: Joi.object(),
       template: Joi.object().keys({
-        uri: Joi.string().uri().required(),
+        uri: Joi.string().uri({allowRelative: true}).required(),
         query: CommonSchema.QueryObjTemplateSchema.optional()
       }).required()
     })
