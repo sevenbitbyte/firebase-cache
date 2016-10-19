@@ -41,10 +41,12 @@ class RefStore {
     if(!this.counters[path]){
       this.counters[path] = new EventCounter({rate: this.enableRateLog})
     }
+
+    return this.counters[path]
   }
 
   logEvent(path, type){
-    var counter = this.counters[path]
+    var counter = this.counter(path)
     if(!counter){ return }
     counter.countEvent(type)
   }
