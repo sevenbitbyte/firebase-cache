@@ -44,7 +44,7 @@ class RefStore {
   }
 
   logEvent(path, type){
-    var counter = this.counters(path)
+    var counter = this.counters[path]
     if(!counter){ return }
     counter.countEvent(type)
   }
@@ -63,10 +63,14 @@ class RefStore {
       return this.query(refPath, url.query)
     }
 
-    if(this.hasRef(refPath)){ return this.refs[refPath] }
+    if(this.hasRef(refPath)){
+      this.logEvent(refPath, 'ref-read')
+      return this.refs[refPath]
+    }
 
     this.nativeRefs[refPath] = this.firebase.database().ref(refPath)
     this.refs[refPath] = new Ref({store: this, path: refPath, ref: this.nativeRefs[refPath]})
+    this.logEvent(refPath, 'ref-create')
     return this.refs[refPath]
   }
 
@@ -84,10 +88,14 @@ class RefStore {
     let queryString = RefStore.queryToQueryString(url, queryObj)
 
     // Return existing query
-    if(this.hasQuery(url, queryObj)){ return this.queries[queryString] }
+    if(this.hasQuery(url, queryObj)){
+      this.logEvent(queryString, 'query-read')
+      return this.queries[queryString]
+    }
 
     var fbQuery = this.nativeQuery(path, queryObj)
     this.queries[queryString] = new Ref({store: this, path: queryString, ref:fbQuery, queryObj: queryObj})
+    this.logEvent(queryString, 'query-create')
     return this.queries[queryString]
   }
 
@@ -100,6 +108,7 @@ class RefStore {
       this.queries[path] = null
       this.nativeQueries[path] = null
 
+      this.logEvent(path, 'query-purge')
       delete this.queries[path]
       delete this.nativeQueries[path]
     }
@@ -108,6 +117,7 @@ class RefStore {
       this.refs[path] = null
       this.nativeRefs[path] = null
 
+      this.logEvent(path, 'ref-purge')
       delete this.refs[path]
       delete this.nativeRefs[path]
     }
@@ -122,7 +132,7 @@ class RefStore {
     let url = Url.parse(path, true)
     let refPath = url.pathname
 
-    if(!path || path.length < 1){ refPath = '/'; console.log('root request') }
+    if(!path || path.length < 1){ refPath = '/'; }
 
 
     // Handle queries
@@ -130,10 +140,13 @@ class RefStore {
       return this.nativeQuery(refPath, url.query)
     }
 
-    if(this.nativeRefs[refPath]){ return this.nativeRefs[refPath] }
+    if(this.nativeRefs[refPath]){
+      this.logEvent(refPath, 'native-ref-read')
+      return this.nativeRefs[refPath]
+    }
 
     this.nativeRefs[refPath] = this.firebase.database().ref(refPath)
-    if(this.nativeRefs[refPath] == null){ throw 'WTF?' }
+    this.logEvent(refPath, 'native-ref-create')
     return this.nativeRefs[refPath];
   }
 
@@ -228,7 +241,10 @@ class RefStore {
     let queryString = RefStore.queryToQueryString(url, queryObj)
 
     // Return existing query
-    if(this.nativeQueries[queryString]){ return this.nativeQueries[queryString] }
+    if(this.nativeQueries[queryString]){
+      this.logEvent(queryString, 'native-query-read')
+      return this.nativeQueries[queryString]
+    }
 
     //Build firebase.database.Query from firebase.database.Ref
     //var ref = this.nativeRef(url.pathname)
@@ -271,7 +287,7 @@ class RefStore {
       }
     }
 
-
+    this.logEvent(queryString, 'native-query-create')
     this.nativeQueries[queryString] = ref
     return this.nativeQueries[queryString]
   }
